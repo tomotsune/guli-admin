@@ -36,7 +36,6 @@
 
     <el-table
       :data="list"
-      element-loading-text="数据加载中"
       border
       fit
       highlight-current-row>
@@ -116,6 +115,23 @@ export default {
       this.searchObj = {}
       // 查询所有讲师数据
       this.fetchData()
+    },
+
+    removeDataById(id) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        teacher.deleteTeacherId(id)
+          .then(response => {
+            this.$messgae({
+              type: 'success',
+              messgae: '删除成功'
+            })
+          })
+        this.fetchData()
+      })
     }
   }
 }
