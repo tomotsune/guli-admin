@@ -25,7 +25,19 @@
       <el-form-item label="讲师简介">
         <el-input v-model="teacher.intro" :rows="10" type="textarea"/>
       </el-form-item>
-      <!-- 讲师头像：TODO -->
+
+      <el-form-item label="讲师头像">
+        <el-upload
+          class="avatar-uploader"
+          :action="BASE_API+'/eduoss/fileoss'"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="teacher.avatar" :src="teacher.avatar" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
+
       <el-form-item>
         <el-button :disabled="saveBtnDisabled" type="primary"
                    @click="saveOrUpdate">保存
@@ -42,7 +54,8 @@ export default {
   data() {
     return {
       teacher: {},
-      saveBtnDisabled: false // 保存按钮是否金庸
+      saveBtnDisabled: false, // 保存按钮是否金庸
+      BASE_API: process.env.BASE_API,
     }
   },
   created() { // 页面渲染前执行
@@ -56,6 +69,22 @@ export default {
     }
   },
   methods: {
+    handleAvatarSuccess(res, file) {
+      console.log(res)
+      this.teacher.avatar = res.data
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
     init() {
       // 判断路径有id值, 做修改
       if (this.$route.params && this.$route.params.id) {
@@ -113,5 +142,30 @@ export default {
 </script>
 
 <style scoped>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
 
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>
