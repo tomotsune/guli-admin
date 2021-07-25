@@ -51,12 +51,13 @@ export default {
       this.loading = true
       this.$refs.upload.submit()
     },
-    // 上传成功
+    // 上传成功r
     fileUploadSuccess(res) {
       // 提示
       this.loading = false
       this.$message.success("添加课程分类成功")
       // 跳转课程分类列表
+      this.$router.push({path:'/edu/subejct/list'})
     },
     // 上传失败
     fileUploadError() {
