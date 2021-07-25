@@ -43,7 +43,7 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/edu/teacher/list',
     name: 'Teacher',
-    meta: {title: '讲师管理', icon: 'peoples'},
+    meta: {title: '讲师管理', icon: 'example'},
     children: [
       {
         path: 'list',
@@ -63,6 +63,28 @@ export const constantRouterMap = [
         component: () => import('@/views/edu/teacher/form'),
         meta: {title: '编辑讲师', noCache: true},
         hidden: true
+      }
+    ]
+  },
+  // 课程分类
+  {
+    path: '/edu/subejct',
+    component: Layout,
+    redirect: '/edu/subject/list',
+    name: 'Subject',
+    meta: {title: '课程分类管理', icon: 'example'},
+    children: [
+      {
+        path: 'list',
+        name: 'EduSubjectList',
+        component: () => import('@/views/edu/subject/list'),
+        meta: {title: '课程分类列表'}
+      },
+      {
+        path: 'create',
+        name: 'EduSubjectCreate',
+        component: () => import('@/views/edu/subject/form'),
+        meta: {title: '添加课程分类'}
       }
     ]
   },
