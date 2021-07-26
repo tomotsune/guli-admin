@@ -30,11 +30,7 @@ export default {
     }
   },
   created() {
-    subject.getSubjectList()
-      .then(res => {
-        this.data2 = res.data
-        console.log(res)
-      })
+    this.getSubjects()
   },
   watch: {
     filterText(val) {
@@ -43,6 +39,10 @@ export default {
   },
 
   methods: {
+    getSubjects() {
+      subject.getSubjects()
+        .then(res => this.data2 = res.data)
+    },
     filterNode(value, data) {
       if (!value) return true
       return data.title.toLowerCase().indexOf(value) !== -1

@@ -41,9 +41,7 @@ export default {
       loading: false
     }
   },
-  created() {
 
-  },
   methods: {
     // 点击阿牛上传文件到接口
     submitUpload() {
