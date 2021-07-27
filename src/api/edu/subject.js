@@ -5,7 +5,13 @@ export default {
   getSubjects() {
     return request({
       url: '/eduservice/subject/getAllSubject',
-      method: 'get',
+      method: 'get'
+    })
+  },
+  getSimpleSubjects() {
+    return request({
+      url: '/eduservice/subject/getSimpleAllSubject',
+      method: 'get'
     })
   }
 }

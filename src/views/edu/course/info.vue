@@ -83,7 +83,7 @@ export default {
       saveBtnDisabled: false, // 保存按钮是否禁用
       courseInfo: {cover: 'https://files.catbox.moe/pfqhh2.png'},
       teachers: [], //封装所有讲师
-      subjects: [{id:''}],
+      subjects: [{id: ''}],
       selectedSubjects: [],
       BASE_API: process.env.BASE_API,
       defaultParams: {
@@ -94,30 +94,49 @@ export default {
     }
   },
   watch: {
+    $route(to, from) {
+      this.init()
+    },
     selectedSubjects(to, from) {
       this.courseInfo.subjectId = this.selectedSubjects[1]
+      console.log('selectedSubjects被监视')
+    },
+    courseInfo(to, from) {
+      if (to.subjectId) {
+        subject.getSimpleSubjects()
+          .then(res => {
+            // 获取一级分类
+            let primarySubjectId = res.data.find(x => x.id === to.subjectId).parentId
+            this.selectedSubjects = [primarySubjectId, to.subjectId]
+            console.log('courseInfo被监视', to.subjectId)
+          })
+      }
     }
   },
   created() {
-    // 初始化所有讲师
-    this.getListTeacher()
-    // 初始化课程分类
-    this.getSubjects()
-
-    if (this.$route.params && this.$route.params.id) {
-      this.getCourseInfo()
-    }
+    this.init()
 
   },
   methods: {
+    init() {
+      // 初始化所有讲师
+      this.getListTeacher()
+      // 初始化课程分类
+      this.getSubjects()
+      // 判断路径有id值, 做修改
+      if (this.$route.params && this.$route.params.id) {
+        this.getCourseInfo()
+
+      } else { // 路径美誉id值, 做添加
+        // 清空表单
+        this.courseInfo = {cover: 'https://files.catbox.moe/pfqhh2.png'}
+        this.selectedSubjects = []
+      }
+    },
     // 根据课程id查询信息
     getCourseInfo() {
       course.getCourseInfo(this.$route.params.id)
         .then(res => this.courseInfo = res.data)
-      // let primarySubjectId =
-      //   this.subjects.filter(x => x.collection.filter(y => y.id === this.courseInfo.subjectId).length === 1)[0].id
-      // console.log('@@', primarySubjectId)
-      // this.selectedSubjects = [primarySubjectId, this.courseInfo.subjectId]
     },
     // 封面上传成功
     handleAvatarSuccess(res, file) {
@@ -151,13 +170,28 @@ export default {
       course.getTeachers()
         .then(res => this.teachers = res.data)
     },
-    saveOrUpdate() {
+    addCourse() {
       course.addCourseInfo(this.courseInfo)
         .then(res => {
           this.$message.success('添加课程信息成功')
           this.$router.push({path: `/edu/course/chapter/${res.data}`})
         })
       console.log('courseInfo', this.courseInfo)
+    },
+    updateCourse() {
+      course.updateCourseInfo(this.courseInfo)
+        .then(res => {
+          this.$message.success('修改课程信息成功')
+          this.$router.push({path: `/edu/course/chapter/${this.courseInfo.id}`})
+        })
+    },
+    saveOrUpdate() {
+      // 判断添加还是修改
+      if (this.courseInfo.id) {
+        this.updateCourse()
+      } else {
+        this.addCourse()
+      }
     }
   }
 }
