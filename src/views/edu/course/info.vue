@@ -83,7 +83,7 @@ export default {
       saveBtnDisabled: false, // 保存按钮是否禁用
       courseInfo: {cover: 'https://files.catbox.moe/pfqhh2.png'},
       teachers: [], //封装所有讲师
-      subjects: [],
+      subjects: [{id:''}],
       selectedSubjects: [],
       BASE_API: process.env.BASE_API,
       defaultParams: {
@@ -103,8 +103,22 @@ export default {
     this.getListTeacher()
     // 初始化课程分类
     this.getSubjects()
+
+    if (this.$route.params && this.$route.params.id) {
+      this.getCourseInfo()
+    }
+
   },
   methods: {
+    // 根据课程id查询信息
+    getCourseInfo() {
+      course.getCourseInfo(this.$route.params.id)
+        .then(res => this.courseInfo = res.data)
+      // let primarySubjectId =
+      //   this.subjects.filter(x => x.collection.filter(y => y.id === this.courseInfo.subjectId).length === 1)[0].id
+      // console.log('@@', primarySubjectId)
+      // this.selectedSubjects = [primarySubjectId, this.courseInfo.subjectId]
+    },
     // 封面上传成功
     handleAvatarSuccess(res, file) {
       this.$message.success('上传成功')

@@ -5,6 +5,15 @@
       <el-step title="创建课程大纲"/>
       <el-step title="提交审核"/>
     </el-steps>
+
+    <el-tree
+      :data="chapterVideo"
+      :props="defaultProps"
+      class="filter-tree"
+      default-expand-all
+    />
+
+
     <el-form label-width="120px">
       <el-form-item>
         <el-button @click="previous">上一步</el-button>
@@ -17,22 +26,33 @@
 </template>
 
 <script>
+import chapter from '@/api/edu/chapter.js'
+
 export default {
   data() {
     return {
-      saveBtnDisabled: false // 保存按钮是否禁用
+      saveBtnDisabled: false, // 保存按钮是否禁用
+      chapterVideo: [],
+      defaultProps: {
+        children: 'collection',
+        label: 'title'
+      }
     }
   },
   created() {
-    console.log('info created')
+    this.getChapterVideo(this.$route.params.id)
   },
   methods: {
+    // 根据课程id查询章节小节
+    getChapterVideo(id) {
+      chapter.getChapterVideo(id)
+        .then(res => this.chapterVideo = res.data)
+    },
     previous() {
-      this.$router.push({path: '/edu/course/info/1'})
+      this.$router.push({path: `/edu/course/info/${this.$route.params.id}`})
     },
     next() {
-      console.log('next')
-      this.$router.push({path: '/edu/course/publish/1'})
+      this.$router.push({path: `/edu/course/publish/${this.$route.params.id}`})
     }
   }
 }
