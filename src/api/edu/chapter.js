@@ -24,7 +24,7 @@ export default {
     })
   },
   // 4. 修改章节
-  udpateChapter(chapter) {
+  updateChapter(chapter) {
     return request({
       url: `/eduservice/chapter/updateChapter`,
       method: 'post',
