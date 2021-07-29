@@ -5,6 +5,19 @@
       <el-step title="创建课程大纲"/>
       <el-step title="提交审核"/>
     </el-steps>
+
+    <div class="ccInfo">
+      <img :src="coursePublish.cover">
+      <div>
+        <h2>{{ coursePublish.title }}</h2>
+        <p><span>共{{ coursePublish.lessonNum }}课时</span></p>
+        <p><span>所属分类: {{ coursePublish.subjectLevelOne }} - {{ coursePublish.subjectLevelTwo }}</span></p>
+        <p>课程讲师: {{ coursePublish.teacherName }}</p>
+        <h3>价钱: {{ coursePublish.price }}</h3>
+      </div>
+    </div>
+
+
     <el-form label-width="120px">
       <el-form-item>
         <el-button @click="previous">返回修改</el-button>
@@ -17,22 +30,33 @@
 </template>
 
 <script>
+import course from '@/api/edu/course.js'
+
 export default {
   data() {
     return {
-      saveBtnDisabled: false // 保存按钮是否禁用
+      saveBtnDisabled: false, // 保存按钮是否禁用
+      coursePublish: {}
     }
   },
   created() {
-    console.log('publish created')
+    this.getCoursePublishInfo()
   },
   methods: {
+    // 根据课程id查询
+    getCoursePublishInfo() {
+      course.getPublishCourseInfo(this.$route.params.id)
+        .then(res => this.coursePublish = res.data)
+    },
     previous() {
-      this.$router.push({path: '/edu/course/chapter/1'})
+      this.$router.push({path: `/edu/course/chapter/${this.$route.params.id}`})
     },
     publish() {
-      console.log('publish')
-      this.$router.push({path: '/edu/course/list'})
+      course.publishCourse(this.$route.params.id)
+        .then(res => {
+          this.$message.success('发布成功')
+          this.$router.push({path: '/edu/course/list'})
+        })
     }
   }
 }

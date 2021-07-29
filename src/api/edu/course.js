@@ -30,5 +30,31 @@ export default {
       method: 'post',
       data: courseInfo
     })
+  },
+  // 课程确认信息
+  getPublishCourseInfo(id) {
+    return request({
+      url: `/eduservice/course/getPublishCourseInfo/${id}`,
+      method: 'get'
+    })
+  },
+  publishCourse(id) {
+    return request({
+      url: `/eduservice/course/publishCourse/${id}`,
+      method: 'post'
+    })
+  },
+  // 课程列表
+  listCourses() {
+    return request({
+      url: `/eduservice/course/list`,
+      method: 'get'
+    })
+  },
+  deleteCourse(courseId) {
+    return request({
+      url: `/eduservice/course/delete/${courseId}`,
+      method: 'delete'
+    })
   }
 }
